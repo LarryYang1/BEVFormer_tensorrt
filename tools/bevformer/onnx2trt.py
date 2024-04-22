@@ -67,13 +67,14 @@ def main():
         output += "_fp16"
     output = os.path.join(config.TENSORRT_PATH, output)
 
-    dataset = build_dataset(cfg=config.data.quant)
-    loader = build_dataloader(
-        dataset, samples_per_gpu=1, workers_per_gpu=6, shuffle=False, dist=False
-    )
-
     calibrator = None
     if args.calibrator is not None:
+
+        dataset = build_dataset(cfg=config.data.quant)
+        loader = build_dataloader(
+            dataset, samples_per_gpu=1, workers_per_gpu=6, shuffle=False, dist=False
+        )
+
         TRT_LOGGER = get_logger(trt.Logger.INTERNAL_ERROR)
         engine_fp32_path = (
             os.path.split(args.onnx)[1]

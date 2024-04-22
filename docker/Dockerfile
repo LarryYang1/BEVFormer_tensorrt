@@ -72,7 +72,7 @@ fi
 
 # Install PyPI packages
 RUN pip3 install --upgrade pip
-RUN pip3 install setuptools>=41.0.0
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn setuptools>=41.0.0
 
 # Install Cmake
 RUN cd /tmp && \
@@ -85,12 +85,12 @@ RUN cd /tmp && \
 RUN cd /usr/local/bin && wget https://ngc.nvidia.com/downloads/ngccli_cat_linux.zip && unzip ngccli_cat_linux.zip && chmod u+x ngc-cli/ngc && rm ngccli_cat_linux.zip ngc-cli.md5 && echo "no-apikey\nascii\n" | ngc-cli/ngc config set
 
 # Install PyTorch
-RUN pip3 install torch==1.12.1+cu116 torchvision==0.13.1+cu116 --extra-index-url https://download.pytorch.org/whl/cu116 --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip3 install torch==1.12.1+cu116 torchvision==0.13.1+cu116 --extra-index-url https://download.pytorch.org/whl/cu116 --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
 
 COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install -r /tmp/requirements.txt
+RUN pip3 install -r /tmp/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
 
-ENV HTTPS_PROXY "http://127.0.0.1:20171"
+#ENV HTTPS_PROXY "http://127.0.0.1:20171"
 
 # Install MMLab
 ARG TORCH_CUDA_ARCH_LIST="7.5;6.1;8.6"
@@ -99,7 +99,7 @@ ENV FORCE_CUDA="1"
 RUN cd / && \
     git clone https://github.com/open-mmlab/mmcv.git && \
     cd mmcv && git checkout v1.5.0 && \
-    pip3 install -r requirements/optional.txt && \
+    pip3 install -r requirements/optional.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn && \
     MMCV_WITH_OPS=1 pip3 install -e .
 
 RUN cd / && \
@@ -118,7 +118,7 @@ RUN cd / && \
     cmake -DCMAKE_CXX_COMPILER=g++ -DMMDEPLOY_TARGET_BACKENDS=trt -DTENSORRT_DIR=/usr -DCUDNN_DIR=/usr/local/cuda .. && \
     make -j$(nproc) && \
     make install && \
-    cd /mmdeploy && pip3 install -v -e .
+    cd /mmdeploy && pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn -v -e .
 
 RUN sudo apt-get install -y libgl1-mesa-glx
 
