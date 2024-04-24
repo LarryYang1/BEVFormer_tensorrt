@@ -405,6 +405,14 @@ sh samples/bevformer/plugin/base/onnx2trt_int8_fp16_2.sh -d ${gpu_id}
 sh samples/bevformer/plugin/base/trt_evaluate_int8_fp16_2.sh -d ${gpu_id}
 ```
 
+* Profiling with CPU, take bevformer_base_trt pipe as an example
+
+```shell
+# Note: customized thop from tools/profiler/thop/profile.py is used,
+# so that we can add more detailed profiling logic.
+python tools/profiler/profile_model.py configs/bevformer/bevformer_base_trt.py --layer-info
+```
+
 ## Acknowledgement
 
 This project is mainly based on these excellent open source projects:

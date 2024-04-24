@@ -78,7 +78,9 @@ def profile(
     with torch.no_grad():
         model(**inputs_kw)
 
-    def dfs_count(module: nn.Module, prefix="--") -> (int, int):
+    module_indent = "----"
+
+    def dfs_count(module: nn.Module, prefix=module_indent) -> (int, int):
         total_ops, total_params = module.total_ops.item(), 0
         total_memory = 0
         ret_dict = {}
@@ -86,7 +88,7 @@ def profile(
             print(prefix, module._get_name(), type(module))
         for n, m in module.named_children():
             # if not hasattr(m, "total_ops") and not hasattr(m, "total_params"):  # and len(list(m.children())) > 0:
-            #     m_ops, m_params = dfs_count(m, prefix=prefix + "--")
+            #     m_ops, m_params = dfs_count(m, prefix=prefix + module_indent)
             # else:
             #     m_ops, m_params = m.total_ops, m.total_params
             next_dict = {}
@@ -97,9 +99,9 @@ def profile(
                 m_memory = m.total_memory.item()
                 memory_collection[m] = m_memory
                 if ret_layer_info:
-                    print(prefix, m._get_name(), type(m), (m_ops, m_params, m_memory))
+                    print(prefix + module_indent, m._get_name(), type(m), (m_ops, m_params, m_memory))
             else:
-                m_ops, m_params, m_memory, next_dict = dfs_count(m, prefix=prefix + "--")
+                m_ops, m_params, m_memory, next_dict = dfs_count(m, prefix=prefix + module_indent)
             ret_dict[n] = (m_ops, m_params, m_memory, next_dict)
             total_ops += m_ops
             total_params += m_params
